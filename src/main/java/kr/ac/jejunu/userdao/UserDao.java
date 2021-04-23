@@ -7,40 +7,23 @@ import org.springframework.jdbc.support.KeyHolder;
 import java.sql.*;
 
 public class UserDao {
-    private final JdbcTemplate jdbcTemplate;
+    private final JejuJdbcTemplate jdbcTemplate;
 
-    public UserDao(JdbcTemplate jdbcTemplate) {
+    public UserDao(JejuJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     public User get(Integer id) throws SQLException {
         Object[] params = new Object[]{id};
         String sql = "select * from userinfo where id = ?";
-//        return jdbcTemplate.get(sql, params);
-        return jdbcTemplate.query(sql, params, rs -> {
-            User user = null;
-            if (rs.next()) {
-                user = new User();
-                user.setId(rs.getInt("id"));
-                user.setName(rs.getString("name"));
-                user.setPassword(rs.getString("password"));
-            }
-            return user;
-        });
+        return jdbcTemplate.get(sql, params);
+
     }
     public void insert(User user) throws SQLException{
         Object[] params = new Object[]{user.getName(), user.getPassword()};
         String sql = "insert into userinfo (name, password) values (?,?)";
-//        jdbcTemplate.insert(user, sql, params);
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(con -> {
-            PreparedStatement preparedStatement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            for (int i = 0; i< params.length; i++) {
-                preparedStatement.setObject(i+1, params[i]);
-            }
-            return preparedStatement;
-        },keyHolder);
-        user.setId(keyHolder.getKey().intValue());
+        jdbcTemplate.insert(user, sql, params);
+
     }
 
     public void update(User user) throws SQLException {
