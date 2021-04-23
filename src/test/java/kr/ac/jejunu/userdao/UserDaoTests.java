@@ -12,7 +12,7 @@ public class UserDaoTests {
     @Test
     public void testGet() throws SQLException, ClassNotFoundException {
         Integer id = 1;
-        String name = "hulk";
+        String name = "clara";
         String password = "1234";
         UserDao userDao = new UserDao();
         User user = userDao.get(id);
